@@ -4,6 +4,10 @@ class QuizController
         @quiz_view=quiz_view
     end
     def run
-        @quiz_view.welcome
+
+          @quiz_view.welcome_menu
+
     end
+    
+
 end
