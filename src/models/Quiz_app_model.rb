@@ -1,7 +1,7 @@
 require_relative 'History'
 require_relative 'Custom'
 class QuizGame
-    attr_reader :history
+    attr_reader :history,:custom
     def initialize()
         @history
         @custom
@@ -11,7 +11,7 @@ class QuizGame
         return @history
     end
     def custom_setter
-        @custom= Custom.new.history
+        @custom= Custom.new.custom
         return @custom
     end
 end

@@ -3,7 +3,7 @@ require "tty-font"
 require_relative "../models/FileManager"
 
 class QuizView
-include FileManager
+    include FileManager
     def initialize(history,custom)
         @history=history
         @custom=custom
@@ -11,21 +11,22 @@ include FileManager
     end
     def welcome_menu
         clear
-    options = [
+      options = [
       { name: "New Game", value: -> {  } },
       { name: "Custom quiz collections", value: -> { custom_collection } },
       { name: "History", value: -> { history_select } },
       { name: "Exit", value: -> {
         clear
-        puts "Thanks for playing!"
+        puts "Going to leave!"
         sleep(2)
         clear
         exit
-      } },
-    ]
-    puts options[1].class
-    option = @prompt.select("Please select from the following options.\n\n\n", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)", show_help: :always)
+        } },
+       ]
+      option = @prompt.select("Please select from the following options.\n\n\n", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)", show_help: :always)
     end
+
+  # History feature
 
     def history_select
     clear
@@ -42,6 +43,8 @@ include FileManager
       option = @prompt.select("Please select from the following options.\n\n\n", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)", show_help: :always)
     end
     
+    # History-display function
+
     def read_history(id)
         clear
         puts "Quiz_collection_name: #{@history["Records"][id-1]["Quiz_collection_name"]}
@@ -53,14 +56,16 @@ include FileManager
                 history_select
               } }
           ]
-          option = @prompt.select("Please select Back if you finish checking.\n\n\n", options, help: "(Pressing Enter to go back)", show_help: :always)
+          option = @prompt.select("Please select Back after checking.\n\n\n", options, help: "(Pressing Enter to go back)", show_help: :always)
     end
+
+    # Custom feature menu view
 
     def custom_collection
         clear
-        choices = [
+        options = [
             { name: "Add custom quiz collection", value: -> {
-            
+            add_collection
             } },
             { name: "Check out custom quiz collection", value: -> {
                 select_collection
@@ -73,36 +78,45 @@ include FileManager
              
             } },
             { name: "Back", value: -> {
-             
                 clear
                 welcome_menu
-              end
-            } },
-          ]
-          choice = @prompt.select("Please select from the following options:\n\n\n", choices, help: "(Choose using ↑/↓ arrow keys, press Enter to select)", show_help: :always)
+              } }
+        ]
+        option = @prompt.select("Please select from the following options:\n\n\n", options, help: "(Choose using ↑/↓ arrow keys, press Enter to select)", show_help: :always)
     end
+
+    # Custom\Collections view
+
     def select_collection
         clear
         options = []
         collection_array=@custom["Custom"]
-        if  @custom.size>0 && collection_array.size>0 && collection_array["Content"]>0
+        if  @custom.size>0 and collection_array.size>0
             collection_array.each {|e|options.push({name:"Custom：#{e["Custom_Name"]}", value: -> {read_collecton(e["Custom_Id"])}})}
         else
             puts "\nSorry, counldn't read any valid date.\n\n"
         end
+
         options.push({ name: "Back", value: -> {
             clear
-            welcome_menu
+            custom_collection
           } })
           option = @prompt.select("Please select from the following options.\n\n\n", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)", show_help: :always)
     end
-    def read_collecton(Custom_Id)
+
+# Custom\Collections_view\Collection 
+
+    def read_collecton(id)
         clear
-        puts "Quiz_collection_name: #{@custom["Custom"][Custom_Id-1]["Custom_Name"]}"
-        quiz_array = @custom["Custom"][Custom_Id-1]["Content"]
+        puts "Quiz_collection_name: #{@custom["Custom"][id-1]["Custom_Name"]}\n\n\n"
+        quiz_array = @custom["Custom"][id-1]["Content"]
         quiz_array.each {|e| 
-            puts "#{e["Id"]}. #{e["Question"]}\n"
-            puts "#{e["A"]}"+
+            puts "#{e["Id"]}. #{e["Question"]}\n\n"
+            puts "A: #{e["A"]}\n\n"
+            puts "B: #{e["B"]}\n\n"
+            puts "C: #{e["C"]}\n\n"
+            puts "D: #{e["D"]}\n\n"
+            puts "-------------------------\n\n"
         }
         options = [
             { name: "Back", value: -> {
@@ -110,11 +124,17 @@ include FileManager
                 select_collection
               } }
           ]
-          option = @prompt.select("Please select Back if you finish checking.\n\n\n", options, help: "(Pressing Enter to go back)", show_help: :always)
+        option = @prompt.select("Please select Back after checking.\n\n\n", options, help: "(Pressing Enter to go back)", show_help: :always)
+    end
+
+    # Custom\Add_collection_view
+    def add_collection
+        clear
+        puts "---------- Add Medication ----------\n"
     end
 
     def clear
-        system("clear") || system("cls")
+        system("clear")
     end
 
 end
