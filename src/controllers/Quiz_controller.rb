@@ -1,6 +1,7 @@
 class QuizController
-    def initialize(quiz_model, quiz_view)
-        @quiz_model=quiz_model
+    def initialize(quiz_history,quiz_custom,quiz_view)
+        @quiz_history=quiz_history
+        @quiz_custom=quiz_custom
         @quiz_view=quiz_view
     end
     def run

@@ -2,31 +2,31 @@
     "Records": [{
             "Id": 1,
             "Accuracy_rate": "100%",
-            "Quiz_bank_name": "1231",
+            "Quiz_collection_name": "1231",
             "Date": "1233"
         },
         {
             "Id": 2,
             "Accuracy_rate": "100%",
-            "Quiz_bank_name": "1231",
+            "Quiz_collection_name": "1231",
             "Date": "1233"
         },
         {
             "Id": 3,
             "Accuracy_rate": "100%",
-            "Quiz_bank_name": "1231",
+            "Quiz_collection_name": "1231",
             "Date": "1233"
         },
         {
             "Id": 4,
             "Accuracy_rate": "100%",
-            "Quiz_bank_name": "1231",
+            "Quiz_collection_name": "1231",
             "Date": "1233"
         },
         {
             "Id": 5,
             "Accuracy_rate": "100%",
-            "Quiz_bank_name": "1231",
+            "Quiz_collection_name": "1231",
             "Date": "1233"
         }
     ]
