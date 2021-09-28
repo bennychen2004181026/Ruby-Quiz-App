@@ -4,8 +4,7 @@ class History
     include FileManager
     attr_reader :history
     def initialize()
-        history=FileManager.load_history
-        @history=history
+        @history=FileManager.load_history
     end
 
 end

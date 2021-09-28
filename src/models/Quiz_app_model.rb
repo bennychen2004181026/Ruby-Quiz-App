@@ -7,11 +7,11 @@ class QuizGame
         @custom
     end
     def history_setter
-        @history= History.new.history
+        @history= History.new
         return @history
     end
-    def custom_setter
-        @custom= Custom.new.custom
+    def custom_load_setter
+        @custom= Custom.new
         return @custom
     end
 end

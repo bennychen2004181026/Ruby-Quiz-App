@@ -6,7 +6,7 @@ class QuizController
     end
     def run
 
-          @quiz_view.welcome_menu
+          @quiz_view.interface
 
     end
     

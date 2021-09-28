@@ -5,11 +5,11 @@ require_relative "../models/FileManager"
 class QuizView
     include FileManager
     def initialize(history,custom)
-        @history=history
-        @custom=custom
+        @history=history.history
+        @custom=custom.custom_load
         @prompt = TTY::Prompt.new(symbols: { marker: "→" })
     end
-    def welcome_menu
+    def interface
         clear
       options = [
       { name: "New Game", value: -> {  } },
@@ -38,7 +38,7 @@ class QuizView
     end
     options.push({ name: "Back", value: -> {
         clear
-        welcome_menu
+        interface
       } })
       option = @prompt.select("Please select from the following options.\n\n\n", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)", show_help: :always)
     end
@@ -79,7 +79,7 @@ class QuizView
             } },
             { name: "Back", value: -> {
                 clear
-                welcome_menu
+                interface
               } }
         ]
         option = @prompt.select("Please select from the following options:\n\n\n", options, help: "(Choose using ↑/↓ arrow keys, press Enter to select)", show_help: :always)
@@ -130,9 +130,14 @@ class QuizView
     # Custom\Add_collection_view
     def add_collection
         clear
-        puts "---------- Add Medication ----------\n"
+        puts "---------- Add a custom collection----------\n\n"
+        puts "Please provide the name of the collection:\n\n"
     end
 
+
+    def validate_
+
+    end
     def clear
         system("clear")
     end
