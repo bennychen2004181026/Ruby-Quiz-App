@@ -24,11 +24,11 @@ class Custom
     return custom_json,new_custom_Id
    end
 
-   def fill_empty_collection(question_content,a,b,c,d,right_answer,empty_collection,new_custom_Id)
+   def fill_empty_collection(question_content,a,b,c,d,right_answer,quiz_id,empty_collection,new_custom_Id)
     custom_json=empty_collection
 
    content_hash= Hash.new
-   content_hash["Id"]=1
+   content_hash["Id"]=quiz_id
    content_hash["Question"]=question_content
    content_hash["A"]=a
    content_hash["B"]=b
@@ -36,14 +36,18 @@ class Custom
    content_hash["D"]=d
    content_hash["Right_answer"]=right_answer
    custom_json["Custom"][new_custom_Id-1]["Content"].push(content_hash)
-   return custom_json
+   @custom=custom_json
+   return @custom
    end 
+
+   def save_custom(custom)
+    FileManager.save_custom(custom)
+   end
 
 
 
 
 end
-a = Custom.new.add_empty_collection("ben")
-puts a.class
+
 
 

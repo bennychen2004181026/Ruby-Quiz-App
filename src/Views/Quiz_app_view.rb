@@ -5,9 +5,9 @@ require_relative "../models/FileManager"
 class QuizView
     include FileManager
     def initialize(history,custom)
-        @history=history.history
-        @custom=custom.custom_load
-        @prompt = TTY::Prompt.new(symbols: { marker: "→" })
+        @history=history
+        @custom=custom
+        @prompt = TTY::Prompt.new(symbols: { marker: "♦" })
     end
     def interface
         clear
@@ -31,8 +31,9 @@ class QuizView
     def history_select
     clear
     options = []
-    if  @history.size>0 && @history["Records"].size>0
-        @history["Records"].each {|e|options.push({name:"Record：#{e["Id"]}  Date: #{e["Date"]}", value: -> {read_history(e["Id"])}})}
+    history_array =(@history.history)["Records"]
+    if  @history.history.size>0 && history_array.size>0
+        history_array.each {|e|options.push({name:"Record：#{e["Id"]}  Date: #{e["Date"]}", value: -> {read_history(e["Id"])}})}
     else
         puts "\nSorry, counldn't read any valid date.\n\n"
     end
@@ -47,9 +48,9 @@ class QuizView
 
     def read_history(id)
         clear
-        puts "Quiz_collection_name: #{@history["Records"][id-1]["Quiz_collection_name"]}
-        Accuracy_rate: #{@history["Records"][id-1]["Accuracy_rate"]}
-        Accomplished date: #{@history["Records"][id-1]["Accuracy_rate"]}"
+        puts "Quiz_collection_name: #{@history.history["Records"][id-1]["Quiz_collection_name"]}
+        Accuracy_rate: #{@history.history["Records"][id-1]["Accuracy_rate"]}
+        Accomplished date: #{@history.history["Records"][id-1]["Accuracy_rate"]}"
         options = [
             { name: "Back", value: -> {
                 clear
@@ -90,8 +91,8 @@ class QuizView
     def select_collection
         clear
         options = []
-        collection_array=@custom["Custom"]
-        if  @custom.size>0 and collection_array.size>0
+        collection_array=@custom.custom_load["Custom"]
+        if  @custom.custom_load.size>0 and collection_array.size>0
             collection_array.each {|e|options.push({name:"Custom：#{e["Custom_Name"]}", value: -> {read_collecton(e["Custom_Id"])}})}
         else
             puts "\nSorry, counldn't read any valid date.\n\n"
@@ -108,8 +109,8 @@ class QuizView
 
     def read_collecton(id)
         clear
-        puts "Quiz_collection_name: #{@custom["Custom"][id-1]["Custom_Name"]}\n\n\n"
-        quiz_array = @custom["Custom"][id-1]["Content"]
+        puts "Quiz_collection_name: #{@custom.custom_load["Custom"][id-1]["Custom_Name"]}\n\n\n"
+        quiz_array = @custom.custom_load["Custom"][id-1]["Content"]
         quiz_array.each {|e| 
             puts "#{e["Id"]}. #{e["Question"]}\n\n"
             puts "A: #{e["A"]}\n\n"
@@ -131,7 +132,55 @@ class QuizView
     def add_collection
         clear
         puts "---------- Add a custom collection----------\n\n"
-        puts "Please provide the name of the collection:\n\n"
+        collection_name = @prompt.ask("Please provide the name of the collection:\n\n") do |input|
+            input.required true
+            input.validate /\A\w+\Z/
+            input.modify   :capitalize
+          end
+
+        custom_container, id = @custom.add_empty_collection(collection_name)
+
+        quiz_number=@prompt.ask("Please provide the number of quizs in the collection in range: 6-15\n\n",required: true) do |input|
+        input.convert(:int, "I need a integer, my friend.")
+        input.in("2-15")
+        input.messages[:range?] = "An Integer between 2 to 15 both inclusively please"
+        end
+
+        for i in 1..quiz_number do
+            args_array=[]
+            question_content = @prompt.ask("Please fill the question #{i} with content:\n", required: :true)
+
+            args_array.push(question_content)
+
+            answer_A = @prompt.ask("Please provide the option A of question #{i} with content:\n", required: :true)
+
+            args_array.push(answer_A)
+
+            answer_B = @prompt.ask("Please provide the option B of question #{i} with content:\n", required: :true)
+
+            args_array.push(answer_B)
+
+            answer_C = @prompt.ask("Please provide the option C of question #{i} with content:\n", required: :true)
+
+            args_array.push(answer_C)
+
+            answer_D = @prompt.ask("Please provide the option D of question #{i} with content:\n", required: :true)
+
+            args_array.push(answer_D)
+
+            
+            options = {A: "A",B:"B", C:"C",D:"D"}
+            right_answer = @prompt.select("Please provide the correct option of question #{i} within A, B, C, D.\n", options,help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)", show_help: :always)
+            args_array.push(right_answer)
+            args_array.push(i)
+            args_array.push(custom_container)
+            all_args =args_array.push(id)
+            # Using splat operator to turn the array into arguments
+            custom_container=@custom.fill_empty_collection(*all_args)
+        end
+        @custom.save_custom(custom_container)
+        @prompt.keypress("Press space or enter to continue", keys: [:space, :return])
+        select_collection
     end
 
 

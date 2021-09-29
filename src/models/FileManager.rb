@@ -1,4 +1,4 @@
-
+require 'json'
 module FileManager
     def self.load_history
         begin history_record = File.read(File.join(File.dirname(__FILE__), "../history/history.json"))
@@ -25,6 +25,15 @@ module FileManager
         puts "Unable to read data."
         return default_record
         end
+    end
+
+    def self.save_custom(hash)
+    begin hash.to_json
+    File.write(File.join(File.dirname(__FILE__), "../quiz_collections/Custom_collection.json"), JSON.dump(hash))
+    rescue Errno::ENOENT
+        puts "Unable to write data."
+        return false
+    end
     end
 end
 
