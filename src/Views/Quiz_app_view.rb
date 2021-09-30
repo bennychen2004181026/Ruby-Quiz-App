@@ -1,6 +1,7 @@
-require "tty-prompt"
-require "tty-font"
-require_relative "../models/FileManager"
+require 'tty-prompt'
+require 'tty-font'
+require 'json'
+require_relative '../models/FileManager'
 
 class QuizView
     include FileManager
@@ -23,7 +24,7 @@ class QuizView
         exit
         } },
        ]
-      option = @prompt.select("Please select from the following options.\n\n\n", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)", show_help: :always)
+      option = @prompt.select("Please select from the following options.\n\n", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)\n\n\n", show_help: :always)
     end
 
   # History feature
@@ -31,17 +32,18 @@ class QuizView
     def history_select
     clear
     options = []
-    history_array =(@history.history)["Records"]
+    begin history_array =(@history.history)["Records"]
     if  @history.history.size>0 && history_array.size>0
         history_array.each {|e|options.push({name:"Record：#{e["Id"]}  Date: #{e["Date"]}", value: -> {read_history(e["Id"])}})}
-    else
-        puts "\nSorry, counldn't read any valid date.\n\n"
+    end
+    rescue JSON::ParserError,NoMethodError,NoMemoryError,StandardError
+    puts "Sorry, it seems the history file is corrupted. Please run one test from main menu with 'New Game'. Finish the game once and a new hisorty record will be created.\n\n\n"
     end
     options.push({ name: "Back", value: -> {
         clear
         interface
       } })
-      option = @prompt.select("Please select from the following options.\n\n\n", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)", show_help: :always)
+      option = @prompt.select("Please select from the following options.\n\n", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)\n\n\n", show_help: :always,per_page:12)
     end
     
     # History-display function
@@ -51,13 +53,15 @@ class QuizView
         puts "Quiz_collection_name: #{@history.history["Records"][id-1]["Quiz_collection_name"]}
         Accuracy_rate: #{@history.history["Records"][id-1]["Accuracy_rate"]}
         Accomplished date: #{@history.history["Records"][id-1]["Accuracy_rate"]}"
+        
         options = [
             { name: "Back", value: -> {
                 clear
                 history_select
               } }
           ]
-          option = @prompt.select("Please select Back after checking.\n\n\n", options, help: "(Pressing Enter to go back)", show_help: :always)
+          option = @prompt.select("Please select Back after checking.\n\n", options, help: "(Pressing Enter to go back)\n\n\n", show_help: :always)
+
     end
 
     # Custom feature menu view
@@ -76,14 +80,14 @@ class QuizView
               edit_collection
             } },
             { name: "Delete a quiz collection", value: -> {
-             
+                display_delete_collections
             } },
             { name: "Back", value: -> {
                 clear
                 interface
               } }
         ]
-        option = @prompt.select("Please select from the following options:\n\n\n", options, help: "(Choose using ↑/↓ arrow keys, press Enter to select)", show_help: :always)
+        option = @prompt.select("Please select from the following options:\n\n", options, help: "(Choose using ↑/↓ arrow keys, press Enter to select)\n\n\n", show_help: :always)
     end
 
     # Custom\Collections view
@@ -91,18 +95,21 @@ class QuizView
     def select_collection
         clear
         options = []
-        collection_array=@custom.custom_load["Custom"]
+        begin collection_array=@custom.custom_load["Custom"]
         if  @custom.custom_load.size>0 and collection_array.size>0
             collection_array.each {|e|options.push({name:"Custom：#{e["Custom_Name"]}", value: -> {read_collecton(e["Custom_Id"])}})}
-        else
-            puts "\nSorry, counldn't read any valid date.\n\n"
+        else puts "Sorry,the content is empty."
         end
+    rescue JSON::ParserError,NoMethodError,NoMemoryError,StandardError
+       puts "It seems the custom file is corrupted.\n\n\n"
+    end
+         
 
         options.push({ name: "Back", value: -> {
             clear
             custom_collection
           } })
-          option = @prompt.select("Please select from the following options.\n\n\n", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)", show_help: :always,per_page: 16)
+          option = @prompt.select("Please select from the following options.\n\n", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)\n\n\n", show_help: :always,per_page: 16)
     end
 
 
@@ -110,7 +117,7 @@ class QuizView
 
     def read_collecton(id)
         clear
-        puts "Quiz_collection_name: #{@custom.custom_load["Custom"][id-1]["Custom_Name"]}\n\n\n"
+        begin puts "Quiz_collection_name: #{@custom.custom_load["Custom"][id-1]["Custom_Name"]}\n\n\n"
         quiz_array = @custom.custom_load["Custom"][id-1]["Content"]
         quiz_array.each {|e| 
             puts "#{e["Id"]}. #{e["Question"]}\n\n"
@@ -120,13 +127,16 @@ class QuizView
             puts "D: #{e["D"]}\n\n"
             puts "-------------------------\n\n"
         }
+    rescue JSON::ParserError,NoMethodError,NoMemoryError,StandardError
+        puts "It seems the custom file is corrupted.\n\n\n"
+    end
         options = [
             { name: "Back", value: -> {
                 clear
                 select_collection
               } }
           ]
-        option = @prompt.select("Please select Back after checking.\n\n\n", options, help: "(Pressing Enter to go back)", show_help: :always)
+        option = @prompt.select("Please select Back after checking.\n\n", options, help: "(Pressing Enter to go back)\n\n\n", show_help: :always)
     end
 
     # Custom\Add_collection_view
@@ -139,8 +149,10 @@ class QuizView
             input.modify   :capitalize
           end
 
-        custom_container, id = @custom.add_empty_collection(collection_name)
-
+        begin custom_container, id = @custom.add_empty_collection(collection_name)
+        rescue JSON::ParserError,NoMethodError,NoMemoryError,StandardError
+           puts "It seems the custom file is corrupted.\n\n\n"
+        end
         quiz_number=@prompt.ask("Please provide the number of quizs in the collection in range: 6-15\n\n",required: true) do |input|
         input.convert(:int, "I need a integer, my friend.")
         input.in("2-15")
@@ -171,7 +183,7 @@ class QuizView
 
             
             options = {A: "A",B:"B", C:"C",D:"D"}
-            right_answer = @prompt.select("Please provide the correct option of question #{i} within A, B, C, D.\n", options,help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)", show_help: :always)
+            right_answer = @prompt.select("Please provide the correct option of question #{i} within A, B, C, D.\n\n", options,help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)\n\n\n", show_help: :always)
             args_array.push(right_answer)
             args_array.push(i)
             args_array.push(custom_container)
@@ -188,39 +200,42 @@ class QuizView
     def edit_collection
         clear
         options = []
-        collection_array=@custom.custom_load["Custom"]
+        begin collection_array=@custom.custom_load["Custom"]
         if  @custom.custom_load.size>0 and collection_array.size>0
             collection_array.each {|e|options.push({name:"Custom：#{e["Custom_Name"]}", value: -> {edit_quiz(e["Custom_Id"])}})}
-        else
-            puts "\nSorry, counldn't read any valid date.\n\n"
+        else puts "Sorry,the content is empty."
         end
-
+        rescue JSON::ParserError,NoMethodError,NoMemoryError,StandardError
+        puts "It seems the custom file is corrupted.\n\n\n"
+        end
         options.push({ name: "Back", value: -> {
             clear
             custom_collection
           } })
-          option = @prompt.select("Please select from the following options.\n\n\n", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)", show_help: :always)
+          option = @prompt.select("Please select from the following options.\n\n", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)\n\n\n", show_help: :always)
     end
 
     def edit_quiz(id)
         clear
-        quiz_array = @custom.custom_load["Custom"][id-1]["Content"]
+        begin quiz_array = @custom.custom_load["Custom"][id-1]["Content"]
         options=[]
         if  quiz_array.size>0
             quiz_array.each {|e|options.push({name:"Question：#{e["Id"]}", value: -> {edit_single_question(id,e)}})}
-            
-        else
-            puts "\nSorry, counldn't read any valid date.\n\n"
+        else puts "Sorry,the content is empty."
         end
+    rescue JSON::ParserError,NoMethodError,NoMemoryError,StandardError
+        puts "It seems the custom file is corrupted.\n\n\n"
+    end
         options.push({ name: "Back", value: -> {
             clear
             edit_collection
           } })
-          option = @prompt.select("Please select one question to edit or turn back to upper menu.\n\n", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)", show_help: :always)
+          option = @prompt.select("Please select one question to edit or turn back to upper menu.\n\n", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)\n\n\n", show_help: :always)
     end
+
     def edit_single_question(collection_id, question)
         clear
-
+            begin 
             puts "#{question["Id"]}. #{question["Question"]}\n"
             puts "A: #{question["A"]}\n"
             puts "B: #{question["B"]}\n"
@@ -228,6 +243,10 @@ class QuizView
             puts "D: #{question["D"]}\n"
             puts "Correct option: #{question["Right_answer"]}\n"
             puts "-------------------------\n"
+
+        rescue JSON::ParserError,NoMethodError,NoMemoryError,StandardError
+            puts "It seems the custom file is corrupted.\n\n\n"
+        end
             options = [
                 { name: "Question Content", value: -> { edit_content(collection_id,question,"Question") } },
                 { name: "Option A", value: -> { edit_content(collection_id,question,"A") } },
@@ -242,7 +261,7 @@ class QuizView
                     @prompt.yes?("\nDo you really want to go back to upper menu without saving?") ? edit_quiz(collection_id) : return
                   } }
                  ]
-                option = @prompt.select("Please select from the following options.\n\n\n", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)", show_help: :always,per_page:8)
+                option = @prompt.select("Please select from the following options.", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)\n\n\n", show_help: :always,per_page:8)
  
 
     end
@@ -270,6 +289,60 @@ class QuizView
         puts "The changes have been saved"
         @prompt.keypress("Press space or enter to continue", keys: [:space, :return])
         return edit_single_question(collection_id, question)
+    end
+
+    def display_delete_collections
+        clear
+        options = []
+        begin custom=@custom.custom_load
+        if  custom["Custom"].size>0
+            custom["Custom"].each {|e|options.push({name:"Custom：#{e["Custom_Name"]}", value: -> {delete_decision(custom,e)}})}
+        else puts "Sorry,the content is empty."
+        end
+        rescue JSON::ParserError,NoMethodError,NoMemoryError,StandardError
+        puts "It seems the custom file is corrupted\n\n\n"
+        end
+        options.push({ name: "Back", value: -> {
+            custom_collection
+          } })
+          option = @prompt.select("Please select one custom collection you want to delete. If you don't want to delete any thing, just select 'Back'.", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)\n\n\n", show_help: :always,per_page:15)
+    end
+
+    def delete_decision(custom,collection)
+        clear
+        options = []
+        options.push(
+            { name: "Yes!!! I want to delete it so bad!!!!", value: -> {
+                conduct_deletion(custom,collection)
+          } },
+          { name: "All right. I want to keep it there now", value: -> {
+            display_delete_collections
+          } })
+          option = @prompt.select("The collection will be delete permanently!!! Think carefully before you act.", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)\n\n\n", show_help: :always) 
+    end
+    def conduct_deletion(custom,collection)
+        clear
+        puts custom["Custom"].size
+        begin new_array = custom["Custom"].reject{|e|e==collection}
+            custom["Custom"]=new_array
+            puts custom["Custom"].size
+            if new_array.empty?
+             @custom.save_custom(custom)
+            elsif
+                for i in 1..new_array.size
+                    custom["Custom"][i-1]["Custom_Id"]=i
+                   puts custom["Custom"][i-1]["Custom_Id"]
+                end
+                @custom.save_custom(custom)
+            end
+            puts "Successfully delete the collection.\n\n\n"
+ 
+        end
+        options = []
+        options.push({ name: "Back", value: -> {
+            display_delete_collections
+          } })
+          option = @prompt.select("Go back to upper menu", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)\n\n\n", show_help: :always,per_page:15)
     end
     def clear
         system("clear")
