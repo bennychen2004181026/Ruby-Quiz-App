@@ -8,6 +8,3 @@ class History
     end
 
 end
-
-a= History.new.history
-puts a["Records"]

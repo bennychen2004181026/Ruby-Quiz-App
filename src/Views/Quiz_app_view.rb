@@ -102,8 +102,9 @@ class QuizView
             clear
             custom_collection
           } })
-          option = @prompt.select("Please select from the following options.\n\n\n", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)", show_help: :always)
+          option = @prompt.select("Please select from the following options.\n\n\n", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)", show_help: :always,per_page: 16)
     end
+
 
 # Custom\Collections_view\Collection 
 
@@ -207,6 +208,7 @@ class QuizView
         options=[]
         if  quiz_array.size>0
             quiz_array.each {|e|options.push({name:"Question：#{e["Id"]}", value: -> {edit_single_question(id,e)}})}
+            
         else
             puts "\nSorry, counldn't read any valid date.\n\n"
         end
@@ -214,33 +216,60 @@ class QuizView
             clear
             edit_collection
           } })
-          option = @prompt.select("Please select one question to edit or turn back to upper menu.\n\n\n", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)", show_help: :always)
+          option = @prompt.select("Please select one question to edit or turn back to upper menu.\n\n", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)", show_help: :always)
     end
     def edit_single_question(collection_id, question)
         clear
-        flag= false
-        while flag = false do
-            puts "#{question["Id"]}. #{e["Question"]}\n\n"
-            puts "A: #{e["A"]}\n\n"
-            puts "B: #{e["B"]}\n\n"
-            puts "C: #{e["C"]}\n\n"
-            puts "D: #{e["D"]}\n\n"
-            puts "-------------------------\n\n\n"
+
+            puts "#{question["Id"]}. #{question["Question"]}\n"
+            puts "A: #{question["A"]}\n"
+            puts "B: #{question["B"]}\n"
+            puts "C: #{question["C"]}\n"
+            puts "D: #{question["D"]}\n"
+            puts "Correct option: #{question["Right_answer"]}\n"
+            puts "-------------------------\n"
             options = [
-                { name: "Question Content", value: -> { edit_content(question["Question"]) } },
-                { name: "Option A", value: -> { edit_content(question["A"]) } },
-                { name: "Option B", value: -> {edit_content(question["B"]) } },
-                { name: "Option C", value: -> { edit_content(question["C"]) } },
-                { name: "Option D", value: -> { edit_content(question["D"]) } },
-                { name: "Correct option", value: -> { edit_content(question["A"]) } },
-                { name: "Exit", value: -> {
-                    @prompt.yes?("\nDo you want to exit the editing and discard changes?") ? flag = true : return
+                { name: "Question Content", value: -> { edit_content(collection_id,question,"Question") } },
+                { name: "Option A", value: -> { edit_content(collection_id,question,"A") } },
+                { name: "Option B", value: -> {edit_content(collection_id,question,"B") } },
+                { name: "Option C", value: -> { edit_content(collection_id,question,"C") } },
+                { name: "Option D", value: -> { edit_content(collection_id,question,"D") } },
+                { name: "Correct option", value: -> { edit_correct_option(collection_id,question,"Right_answer") } },
+                { name: "Comfirm the change", value: -> {
+                    @prompt.yes?("\nDo you want to comfirm the change or continue editing?") ? comfirm_edit(collection_id,question["Id"],question) : return
                   } },
+                  { name: "Ignore the changes and go back to upper menu", value: -> {
+                    @prompt.yes?("\nDo you really want to go back to upper menu without saving?") ? edit_quiz(collection_id) : return
+                  } }
                  ]
-                option = @prompt.select("Please select from the following options.\n\n\n", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)", show_help: :always)
-        end
-        clear
-        edit_quiz(collection_id)
+                option = @prompt.select("Please select from the following options.\n\n\n", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)", show_help: :always,per_page:8)
+ 
+
+    end
+     
+    def edit_content(collection_id,question,question_key)
+        new_value=@prompt.ask("What is your new value for #{question_key}?") do |q|
+            q.required true
+            q.modify   :capitalize
+          end
+          question[question_key]=new_value
+          return edit_single_question(collection_id, question)
+    end
+
+    def edit_correct_option(collection_id,question,key_for_correct_option)
+        options = ["A","B","C","D"]
+     new_right_option = @prompt.select("Choose your new correct option:", options, per_page: 4)
+     question[key_for_correct_option]=new_right_option
+     return edit_single_question(collection_id, question)
+    end
+
+    def comfirm_edit(collection_id,question_id,question)
+        new_custom=@custom.custom_load
+        new_custom["Custom"][collection_id-1]["Content"][question_id-1] = question
+        @custom.save_custom(new_custom)
+        puts "The changes have been saved"
+        @prompt.keypress("Press space or enter to continue", keys: [:space, :return])
+        return edit_single_question(collection_id, question)
     end
     def clear
         system("clear")
