@@ -73,7 +73,7 @@ class QuizView
             
               } },
             { name: "Edit a quiz collection", value: -> {
-              
+              edit_collection
             } },
             { name: "Delete a quiz collection", value: -> {
              
@@ -177,15 +177,70 @@ class QuizView
             all_args =args_array.push(id)
             # Using splat operator to turn the array into arguments
             custom_container=@custom.fill_empty_collection(*all_args)
+            @prompt.keypress("Press space or enter to continue", keys: [:space, :return])
+            clear
         end
         @custom.save_custom(custom_container)
-        @prompt.keypress("Press space or enter to continue", keys: [:space, :return])
         select_collection
     end
+    
+    def edit_collection
+        clear
+        options = []
+        collection_array=@custom.custom_load["Custom"]
+        if  @custom.custom_load.size>0 and collection_array.size>0
+            collection_array.each {|e|options.push({name:"Custom：#{e["Custom_Name"]}", value: -> {edit_quiz(e["Custom_Id"])}})}
+        else
+            puts "\nSorry, counldn't read any valid date.\n\n"
+        end
 
+        options.push({ name: "Back", value: -> {
+            clear
+            custom_collection
+          } })
+          option = @prompt.select("Please select from the following options.\n\n\n", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)", show_help: :always)
+    end
 
-    def validate_
-
+    def edit_quiz(id)
+        clear
+        quiz_array = @custom.custom_load["Custom"][id-1]["Content"]
+        options=[]
+        if  quiz_array.size>0
+            quiz_array.each {|e|options.push({name:"Question：#{e["Id"]}", value: -> {edit_single_question(id,e)}})}
+        else
+            puts "\nSorry, counldn't read any valid date.\n\n"
+        end
+        options.push({ name: "Back", value: -> {
+            clear
+            edit_collection
+          } })
+          option = @prompt.select("Please select one question to edit or turn back to upper menu.\n\n\n", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)", show_help: :always)
+    end
+    def edit_single_question(collection_id, question)
+        clear
+        flag= false
+        while flag = false do
+            puts "#{question["Id"]}. #{e["Question"]}\n\n"
+            puts "A: #{e["A"]}\n\n"
+            puts "B: #{e["B"]}\n\n"
+            puts "C: #{e["C"]}\n\n"
+            puts "D: #{e["D"]}\n\n"
+            puts "-------------------------\n\n\n"
+            options = [
+                { name: "Question Content", value: -> { edit_content(question["Question"]) } },
+                { name: "Option A", value: -> { edit_content(question["A"]) } },
+                { name: "Option B", value: -> {edit_content(question["B"]) } },
+                { name: "Option C", value: -> { edit_content(question["C"]) } },
+                { name: "Option D", value: -> { edit_content(question["D"]) } },
+                { name: "Correct option", value: -> { edit_content(question["A"]) } },
+                { name: "Exit", value: -> {
+                    @prompt.yes?("\nDo you want to exit the editing and discard changes?") ? flag = true : return
+                  } },
+                 ]
+                option = @prompt.select("Please select from the following options.\n\n\n", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)", show_help: :always)
+        end
+        clear
+        edit_quiz(collection_id)
     end
     def clear
         system("clear")
