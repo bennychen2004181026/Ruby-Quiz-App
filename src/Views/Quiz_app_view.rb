@@ -7,16 +7,17 @@ require_relative '../models/FileManager'
 
 class QuizView
     include FileManager
-    def initialize(history,custom,test_time)
+    def initialize(history,custom,test_object)
         @history = history
         @custom = custom
-        @test = test_time
+        @test = test_object
         @prompt = TTY::Prompt.new(symbols: { marker: "♦" })
     end
     def interface
         clear
+
       options = [
-      { name: "New Game", value: -> { select_mode } },
+      { name: "New Game", value: -> { get_user_selection } },
       { name: "Custom quiz collections", value: -> { custom_collection } },
       { name: "History", value: -> { history_select } },
       { name: "Exit", value: -> {
@@ -194,7 +195,7 @@ class QuizView
             all_args =args_array.push(id)
             # Using splat operator to turn the array into arguments
             custom_container=@custom.fill_empty_collection(*all_args)
-            @prompt.keypress("Press space or enter to continue", keys: [:space, :return])
+            enter_to_continue
             clear
         end
         @custom.save_custom(custom_container)
@@ -291,7 +292,7 @@ class QuizView
         new_custom["Custom"][collection_id-1]["Content"][question_id-1] = question
         @custom.save_custom(new_custom)
         puts "The changes have been saved"
-        @prompt.keypress("Press space or enter to continue", keys: [:space, :return])
+        enter_to_continue
         return edit_single_question(collection_id, question)
     end
 
@@ -358,23 +359,22 @@ class QuizView
     end
 
     def get_user_selection
-        redirect_to controller: "items", action: "show", id: @item
         puts "---------- User selection----------\n\n"
         user_name = @prompt.ask("Hello, visitor! Can I have you name please?\n\n") do |input|
             input.required true
             input.validate /\A\w+\Z/
             input.modify   :capitalize
         end
-        
+        clear
         level_selections = [
             { name: "Easy", value: -> {
-                @test.time_level["Easy"]
+                @test.time_level[:Easy]
               } },
             { name: "Normal", value: -> {
-                @test.time_level["Normal"]
+                @test.time_level[:Normal]
               } },
             { name: "Hard", value: -> {
-                @test.time_level["Hard"]
+                @test.time_level[:Hard]
               } },
             { name: "I want to change my name. Please let me go back", value: -> {
                 interface
@@ -383,6 +383,7 @@ class QuizView
        selection = @prompt.select("Please select one time mode for answering each question in a quiz.\nIf you can not selection a option in the limited time\nIt will be considered as false amswer", level_selections, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)\n\n", show_help: :always,per_page:5)
        
        clear
+
        test_collections = [
         { name: "Default collections", value: -> {
             pick_collection("Default",user_name,selection)
@@ -394,15 +395,16 @@ class QuizView
             interface
           } }
     ]
-    test_collections= @prompt.select("Please select one group of collecctions",  test_collections, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)\n\n", show_help: :always,per_page:3)
+    test_collection= @prompt.select("Please select one group of collecctions",  test_collections, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)\n\n", show_help: :always,per_page:3)
     end
 
-    def get_test_collection(string,user_name,selection)
+    def pick_collection(string,user_name,selection)
         clear
         options=[]
+        
       if string == "Default"
         begin  default_collections_array = @test.default[string]
-            default_collections_array.each {|e|options.push({name:"Default collection #{e["Default_Id"]} :#{e["Default_Name"]}\n\n", value: -> {string,e["Default_Name"],e,user_name,selection}})}
+            default_collections_array.each {|e|options.push({name:"Default collection #{e["Default_Id"]} :#{e["Default_Name"]}\n\n", value: -> {test_comfirm(string,e["Default_Name"],e,user_name,selection)}})}
         rescue JSON::ParserError,NoMethodError,NoMemoryError,StandardError
             puts "Sorry, couldn't read the content of Default_collection file.\n"
             puts "Recreating the Default contetnt.\n\n"
@@ -412,23 +414,24 @@ class QuizView
         end
       elsif string == "Custom"
         begin  custom_collections_array = @custom.custom_load[string]
-            custom_collections_array.each {|e|options.push({name:"Custom collection #{e["Custom_Id"]} :#{e["Custom_Name"]}\n\n", value: -> {string,e["Custom_Name"],e,user_name,selection}})}
+            custom_collections_array.each {|e|options.push({name:"Custom collection #{e["Custom_Id"]} :#{e["Custom_Name"]}\n\n", value: -> {test_comfirm(string,e["Custom_Name"],e,user_name,selection)}})}
         rescue JSON::ParserError,NoMethodError,NoMemoryError,StandardError
             puts "Sorry, couldn't read the content of Custom_collection file.\n"
             puts "Please go back to custom menu and add new custom content.\n\n"
         end
        
       end
-      options = [
+      options.push( [
         { name: "Back", value: -> {
             interface
           } }
-      ]
+      ])
     option = @prompt.select("Please select the quiz that you want to test or go back to main menu.\n\n", options, help: "(Pressing Enter to go back)\n\n\n", show_help: :always,per_page:10)
     end
 
     def test_comfirm(type,quiz_name,quiz,user_name,time)
         clear
+ 
         puts "Hello, #{user_name}. The #{quiz_name} test of #{type} collections is going to apply.\n\nThe test time of answering each question is limited to #{time}s\n\n\n"
 
         options =[
@@ -445,25 +448,88 @@ class QuizView
     
     def test_loop(type,quiz_name,quiz,user_name,time)
         clear
-        flag = false
-        while flag = false
+        status=[]
             total_score=0
             correct_count=0
             incorrect_count=0
+            status.push(total_score).push(correct_count).push(incorrect_count)
             for i in 1..quiz["Content"].size do
-               begin Timeout.timeout(time) do
+            begin Timeout.timeout(time) do
                 clear
-                puts "You have get #{correct_count} correct answer(s) so far.    And the total score is #{total_score}.\n\n"
-
-                puts "#{i}. #{quiz["Content"][i-1]["Question"]}\n\n"
-                
-               end
+                start_time=Process.clock_gettime(Process::CLOCK_MONOTONIC)
+                puts "You have get #{status[1]} correct answer(s) so far.    And the total score is #{status[0]}.\n\n"
+                puts "Question #{i}. #{quiz["Content"][i-1]["Question"]}\n\n"
+                 right_answer=quiz["Content"][i-1]["Right_answer"]
+ 
+                options = [
+                    { name: "A. #{quiz["Content"][i-1]["A"]}", value: -> {
+                        validate_answer("A",right_answer,status,start_time,time)
+                      } },
+                      { name: "B. #{quiz["Content"][i-1]["B"]}", value: -> {
+                        validate_answer("B",right_answer,status,start_time,time)
+                      } },
+                      { name: "C. #{quiz["Content"][i-1]["C"]}", value: -> {
+                        validate_answer("C",right_answer,status,start_time,time)
+                      } },
+                      { name: "D. #{quiz["Content"][i-1]["D"]}", value: -> {
+                        validate_answer("D",right_answer,status,start_time,time)
+                      } }]
+                 option = option = @prompt.select("Please select the answer as fast as you can to gain more score.\nIf you select wrong answer or time expired, you will not get the score for Question #{i}", options, help: "(Pressing Enter to go back)\n\n\n", show_help: :always,per_page:4)
             end
-        end
-
-
+            rescue Timeout::Error
+                    puts "\n\nOh, no!!! The #{time}s haven been passed."
+                    start_time=Process.clock_gettime(Process::CLOCK_MONOTONIC)
+                    right_answer=quiz["Content"][i-1]["Right_answer"]
+                    validate_answer("expired",right_answer,status,start_time,time)
+            end
+         end
+         clear
+         puts "Well done, My friend. You did a great job! Let's see waht the results is."
+         enter_to_continue
+         mode=@test.time_level.key(time)
+         status.push(type).push(quiz_name).push(user_name).push(mode)
+         dispaly_result_and_save(status)
+         
     end
 
+
+   
+    def dispaly_result_and_save(array)
+        clear
+        puts "#{array[5]}, your totaly score is #{array[0]}.\n\n"
+
+
+                @history.add_history_and_save(array)
+
+
+
+
+            options = [
+                { name: "Finish and go back to main menu", value: -> {
+                    interface
+                  } }]
+            option = @prompt.select("Thanks for playing, you can go back to main menu", options, help: "(Pressing Enter to go back)\n\n\n", show_help: :always)
+    end
+
+    def validate_answer(answer,right_answer,status,start_time,time)
+        case answer
+        when right_answer
+        answer_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+        time_used = (answer_time - start_time).round(1)
+        total_score = 500 + (time - time_used)*10
+        status[0] += total_score
+        status[1] += 1
+        puts "Hooray!!! You got it!!"
+
+        else 
+            puts "It's fine. Let's keep going"
+            status[2] += 1
+        end
+        enter_to_continue
+    end
+    def enter_to_continue
+        @prompt.keypress("Press space or enter to continue", keys: [:space, :return])
+    end
     def clear
         system("clear")
     end

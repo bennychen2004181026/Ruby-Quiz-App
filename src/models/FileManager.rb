@@ -36,5 +36,11 @@ module FileManager
      rescue StandardError,IOError
      end
     end
+    def self.save_history(hash)
+     begin 
+     File.write(File.join(File.dirname(__FILE__), "../history/history.json"), JSON.dump(hash))
+     rescue StandardError,IOError
+     end
+    end
 end
 

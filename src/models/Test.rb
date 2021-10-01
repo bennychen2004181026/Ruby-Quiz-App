@@ -6,9 +6,9 @@ class Test
     attr_reader :time_level,:default,:reset
     def initialize()
         @time_level = {
-            "Easy": 20,
-            "Normal": 15,
-            "Hard": 10,
+            "Easy": 16,
+            "Normal": 12,
+            "Hard": 8,
         }
         @default = FileManager.load_default
         @reset

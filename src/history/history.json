@@ -1,33 +1,14 @@
 {
     "Records": [{
-            "Id": 1,
-            "Accuracy_rate": "100%",
-            "Quiz_collection_name": "1231",
-            "Date": "1233"
-        },
-        {
-            "Id": 2,
-            "Accuracy_rate": "100%",
-            "Quiz_collection_name": "1231",
-            "Date": "1233"
-        },
-        {
-            "Id": 3,
-            "Accuracy_rate": "100%",
-            "Quiz_collection_name": "1231",
-            "Date": "1233"
-        },
-        {
-            "Id": 4,
-            "Accuracy_rate": "100%",
-            "Quiz_collection_name": "1231",
-            "Date": "1233"
-        },
-        {
-            "Id": 5,
-            "Accuracy_rate": "100%",
-            "Quiz_collection_name": "1231",
-            "Date": "1233"
-        }
-    ]
+        "Id": 1,
+        "User_name": "1",
+        "Type": "Default",
+        "Mode": "Easy",
+        "Accuracy_rate": "100%",
+        "Quiz_collection_name": "AAA",
+        "Total_score": 6980.0,
+        "Correct": 10,
+        "Incorrect": 0,
+        "Date": "02/10/2021 04:06"
+    }]
 }
