@@ -25,11 +25,16 @@ module FileManager
     end
 
     def self.save_custom(hash)
-    begin
-        
-    File.write(File.join(File.dirname(__FILE__), "../quiz_collections/Custom_collection.json"), JSON.dump(hash))
-    rescue StandardError,IOError
+     begin 
+     File.write(File.join(File.dirname(__FILE__), "../quiz_collections/Custom_collection.json"), JSON.dump(hash))
+     rescue StandardError,IOError
+     end
     end
+    def self.save_default(hash)
+     begin 
+     File.write(File.join(File.dirname(__FILE__), "../quiz_collections/Default_collection.json"), JSON.dump(hash))
+     rescue StandardError,IOError
+     end
     end
 end
 

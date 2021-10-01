@@ -2,19 +2,21 @@ require 'tty-prompt'
 require 'tty-font'
 require 'json'
 require "colorize"
+require 'timeout'
 require_relative '../models/FileManager'
 
 class QuizView
     include FileManager
-    def initialize(history,custom)
-        @history=history
-        @custom=custom
+    def initialize(history,custom,test_time)
+        @history = history
+        @custom = custom
+        @test = test_time
         @prompt = TTY::Prompt.new(symbols: { marker: "♦" })
     end
     def interface
         clear
       options = [
-      { name: "New Game", value: -> {  } },
+      { name: "New Game", value: -> { select_mode } },
       { name: "Custom quiz collections", value: -> { custom_collection } },
       { name: "History", value: -> { history_select } },
       { name: "Exit", value: -> {
@@ -41,7 +43,6 @@ class QuizView
     puts "Sorry, it seems the history content is empty. Please run one test from main menu with 'New Game'. Finish the game once and a new hisorty record will be created.\n\n\n"
     end
     options.push({ name: "Back", value: -> {
-        clear
         interface
       } })
       option = @prompt.select("Please select from the following options.\n\n", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)\n\n\n", show_help: :always,per_page:12)
@@ -355,6 +356,114 @@ class QuizView
         }
         @custom.save_custom(hash)
     end
+
+    def get_user_selection
+        redirect_to controller: "items", action: "show", id: @item
+        puts "---------- User selection----------\n\n"
+        user_name = @prompt.ask("Hello, visitor! Can I have you name please?\n\n") do |input|
+            input.required true
+            input.validate /\A\w+\Z/
+            input.modify   :capitalize
+        end
+        
+        level_selections = [
+            { name: "Easy", value: -> {
+                @test.time_level["Easy"]
+              } },
+            { name: "Normal", value: -> {
+                @test.time_level["Normal"]
+              } },
+            { name: "Hard", value: -> {
+                @test.time_level["Hard"]
+              } },
+            { name: "I want to change my name. Please let me go back", value: -> {
+                interface
+              } },
+        ]
+       selection = @prompt.select("Please select one time mode for answering each question in a quiz.\nIf you can not selection a option in the limited time\nIt will be considered as false amswer", level_selections, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)\n\n", show_help: :always,per_page:5)
+       
+       clear
+       test_collections = [
+        { name: "Default collections", value: -> {
+            pick_collection("Default",user_name,selection)
+          } },
+        { name: "Custom collections", value: -> {
+            pick_collection("Custom",user_name,selection)
+          } },
+        { name: "I want to change the time setting. Please let me go back to main menu", value: -> {
+            interface
+          } }
+    ]
+    test_collections= @prompt.select("Please select one group of collecctions",  test_collections, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)\n\n", show_help: :always,per_page:3)
+    end
+
+    def get_test_collection(string,user_name,selection)
+        clear
+        options=[]
+      if string == "Default"
+        begin  default_collections_array = @test.default[string]
+            default_collections_array.each {|e|options.push({name:"Default collection #{e["Default_Id"]} :#{e["Default_Name"]}\n\n", value: -> {string,e["Default_Name"],e,user_name,selection}})}
+        rescue JSON::ParserError,NoMethodError,NoMemoryError,StandardError
+            puts "Sorry, couldn't read the content of Default_collection file.\n"
+            puts "Recreating the Default contetnt.\n\n"
+            new_default = @test.default_content_setter
+            @test.reset_default(new_default)
+        retry
+        end
+      elsif string == "Custom"
+        begin  custom_collections_array = @custom.custom_load[string]
+            custom_collections_array.each {|e|options.push({name:"Custom collection #{e["Custom_Id"]} :#{e["Custom_Name"]}\n\n", value: -> {string,e["Custom_Name"],e,user_name,selection}})}
+        rescue JSON::ParserError,NoMethodError,NoMemoryError,StandardError
+            puts "Sorry, couldn't read the content of Custom_collection file.\n"
+            puts "Please go back to custom menu and add new custom content.\n\n"
+        end
+       
+      end
+      options = [
+        { name: "Back", value: -> {
+            interface
+          } }
+      ]
+    option = @prompt.select("Please select the quiz that you want to test or go back to main menu.\n\n", options, help: "(Pressing Enter to go back)\n\n\n", show_help: :always,per_page:10)
+    end
+
+    def test_comfirm(type,quiz_name,quiz,user_name,time)
+        clear
+        puts "Hello, #{user_name}. The #{quiz_name} test of #{type} collections is going to apply.\n\nThe test time of answering each question is limited to #{time}s\n\n\n"
+
+        options =[
+            { name: "Let's get started!!!!", value: -> {
+                test_loop(type,quiz_name,quiz,user_name,time)
+              } },
+              { name: "I want to reset the test", value: -> {
+                interface
+              } }
+        ]
+
+        option = @prompt.select("Please comfirm that you are ready or go back to main menu to run a new test.\n\n", options, help: "(Pressing Enter to go back)\n\n\n", show_help: :always)
+    end
+    
+    def test_loop(type,quiz_name,quiz,user_name,time)
+        clear
+        flag = false
+        while flag = false
+            total_score=0
+            correct_count=0
+            incorrect_count=0
+            for i in 1..quiz["Content"].size do
+               begin Timeout.timeout(time) do
+                clear
+                puts "You have get #{correct_count} correct answer(s) so far.    And the total score is #{total_score}.\n\n"
+
+                puts "#{i}. #{quiz["Content"][i-1]["Question"]}\n\n"
+                
+               end
+            end
+        end
+
+
+    end
+
     def clear
         system("clear")
     end
