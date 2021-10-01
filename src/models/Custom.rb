@@ -14,8 +14,11 @@ class Custom
 
    def add_empty_collection(custom_name)
     custom_json=FileManager.load_custom
-   new_custom_Id = custom_json["Custom"].map{|h|h["Custom_Id"]}.max + 1
-   
+    if custom_json["Custom"].empty?
+        new_custom_Id =1
+    else
+        new_custom_Id = custom_json["Custom"].map{|h|h["Custom_Id"]}.max + 1
+    end
    new_custom= Hash.new
    new_custom["Custom_Id"]=new_custom_Id
    new_custom["Custom_Name"]=custom_name

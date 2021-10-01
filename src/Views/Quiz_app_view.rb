@@ -1,6 +1,7 @@
 require 'tty-prompt'
 require 'tty-font'
 require 'json'
+require "colorize"
 require_relative '../models/FileManager'
 
 class QuizView
@@ -37,7 +38,7 @@ class QuizView
         history_array.each {|e|options.push({name:"Record：#{e["Id"]}  Date: #{e["Date"]}", value: -> {read_history(e["Id"])}})}
     end
     rescue JSON::ParserError,NoMethodError,NoMemoryError,StandardError
-    puts "Sorry, it seems the history file is corrupted. Please run one test from main menu with 'New Game'. Finish the game once and a new hisorty record will be created.\n\n\n"
+    puts "Sorry, it seems the history content is empty. Please run one test from main menu with 'New Game'. Finish the game once and a new hisorty record will be created.\n\n\n"
     end
     options.push({ name: "Back", value: -> {
         clear
@@ -101,7 +102,7 @@ class QuizView
         else puts "Sorry,the content is empty."
         end
     rescue JSON::ParserError,NoMethodError,NoMemoryError,StandardError
-       puts "It seems the custom file is corrupted.\n\n\n"
+       puts "It seems the custom content is empty. Please move to custom menu to add a new custom collection.\n\n\n"
     end
          
 
@@ -128,7 +129,7 @@ class QuizView
             puts "-------------------------\n\n"
         }
     rescue JSON::ParserError,NoMethodError,NoMemoryError,StandardError
-        puts "It seems the custom file is corrupted.\n\n\n"
+        puts "It seems the custom content is empty. Please move to custom menu to add a new custom collection.\n\n\n"
     end
         options = [
             { name: "Back", value: -> {
@@ -152,6 +153,8 @@ class QuizView
         begin custom_container, id = @custom.add_empty_collection(collection_name)
         rescue JSON::ParserError,NoMethodError,NoMemoryError,StandardError
            puts "It seems the custom file is corrupted.\n\n\n"
+           backup_custom(collection_name)
+        retry
         end
         quiz_number=@prompt.ask("Please provide the number of quizs in the collection in range: 6-15\n\n",required: true) do |input|
         input.convert(:int, "I need a integer, my friend.")
@@ -206,7 +209,7 @@ class QuizView
         else puts "Sorry,the content is empty."
         end
         rescue JSON::ParserError,NoMethodError,NoMemoryError,StandardError
-        puts "It seems the custom file is corrupted.\n\n\n"
+        puts "It seems the custom content is empty. Please move to custom menu to add a new custom collection.\n\n\n"
         end
         options.push({ name: "Back", value: -> {
             clear
@@ -224,7 +227,7 @@ class QuizView
         else puts "Sorry,the content is empty."
         end
     rescue JSON::ParserError,NoMethodError,NoMemoryError,StandardError
-        puts "It seems the custom file is corrupted.\n\n\n"
+        puts "It seems the custom content is empty. Please move to custom menu to add a new custom collection.\n\n\n"
     end
         options.push({ name: "Back", value: -> {
             clear
@@ -245,7 +248,7 @@ class QuizView
             puts "-------------------------\n"
 
         rescue JSON::ParserError,NoMethodError,NoMemoryError,StandardError
-            puts "It seems the custom file is corrupted.\n\n\n"
+            puts "It seems the custom content is empty. Please move to custom menu to add a new custom collection.\n\n\n"
         end
             options = [
                 { name: "Question Content", value: -> { edit_content(collection_id,question,"Question") } },
@@ -300,7 +303,7 @@ class QuizView
         else puts "Sorry,the content is empty."
         end
         rescue JSON::ParserError,NoMethodError,NoMemoryError,StandardError
-        puts "It seems the custom file is corrupted\n\n\n"
+        puts "It seems the custom content is empty. Please move to custom menu to add a new custom collection.\n\n\n"
         end
         options.push({ name: "Back", value: -> {
             custom_collection
@@ -343,6 +346,14 @@ class QuizView
             display_delete_collections
           } })
           option = @prompt.select("Go back to upper menu", options, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)\n\n\n", show_help: :always,per_page:15)
+    end
+
+    def backup_custom(add_name)
+        puts "It seems the content is empty".colorize(:red) + "\nTry to establish a empty custom container".colorize(:light_black)
+        hash ={"Custom":[
+        ]
+        }
+        @custom.save_custom(hash)
     end
     def clear
         system("clear")
