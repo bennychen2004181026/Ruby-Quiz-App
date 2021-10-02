@@ -1,3 +1,4 @@
+# OpeningOptions is a controller to coordinate with model instance and view
 class OpeningOptions
     def initialize(quiz_history,quiz_custom,quiz_test,quiz_view)
         @quiz_history=quiz_history
