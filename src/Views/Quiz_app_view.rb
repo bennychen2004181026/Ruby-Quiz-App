@@ -13,6 +13,7 @@ class QuizView
         @test = test_object
         @prompt = TTY::Prompt.new(symbols: { marker: "♦" })
     end
+    
     def interface
         clear
 
