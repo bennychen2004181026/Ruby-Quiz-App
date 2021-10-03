@@ -40,7 +40,7 @@ class QuizView
         puts app_banner.art!('roman').colorize(:light_cyan)
       end
       def result_banner
-        app_banner = "Hooray！！！"
+        app_banner = "Hooray!!!"
         puts app_banner.art!('rowancap').colorize(:light_cyan)
       end
       def timeout_banner
@@ -598,17 +598,15 @@ class QuizView
     end
 
 
-   # Display the results 
+  # Display the results 
     def dispaly_result_and_save(array)
         clear
         result_banner
         puts
         puts "#{array[5]}, your totaly score is #{array[0]}.\n\n"
 
-# Save the result to history file by invoking the method in history model
-                @history.add_history_and_save(array)
-
-
+  # Save the result to history file by invoking the method in history model
+                @history.add_history_and_save(array)    
 
   # Provide exit to main menu
             options = [

@@ -18,13 +18,12 @@ class History
     if @history.nil?
       creat_empty_history
       new_history_Id = 1
-
-    elsif @history['Records'].empty?
+    elsif @history["Records"].empty?
       new_history_Id = 1
     else
-      new_history_Id = history_array.map { |h| h['Id'] }.max + 1
+      new_history_Id = @history["Records"].map { |h| h['Id'] }.max + 1
     end
-    history_array = @history[:Records]
+    history_array = @history["Records"]
     date = DateTime.now
     accuracy_rate = "#{((array[1] / (array[1] + array[2])) * 100).round(2)}%"
     new_history = {}
