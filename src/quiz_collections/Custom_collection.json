@@ -1,1 +1,288 @@
-{"Custom":[{"Custom_Id":1,"Custom_Name":"AAA","Content":[{"Id":1,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":2,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":3,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":4,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":5,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":6,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":7,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":8,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":9,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":10,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"}]},{"Custom_Id":2,"Custom_Name":"BBB","Content":[{"Id":1,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":2,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":3,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":4,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":5,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":6,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":7,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":8,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":9,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":10,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"}]},{"Custom_Id":3,"Custom_Name":"CCC","Content":[{"Id":1,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":2,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":3,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":4,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":5,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":6,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":7,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":8,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":9,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"},{"Id":10,"Question":"1231","A":"1233","B":"1233","C":"1233","D":"1233","Right_answer":"A"}]},{"Custom_Id":4,"Custom_Name":"1","Content":[{"Id":1,"Question":"1","A":"1","B":"1","C":"1","D":"1","Right_answer":"A"},{"Id":2,"Question":"1","A":"1","B":"1","C":"1","D":"1","Right_answer":"A"}]},{"Custom_Id":5,"Custom_Name":"2","Content":[{"Id":1,"Question":"1","A":"1","B":"1","C":"Asdfa","D":"1","Right_answer":"A"},{"Id":2,"Question":"1","A":"Wertwrt","B":"1","C":"1","D":"Vbcbnc","Right_answer":"A"}]},{"Custom_Id":6,"Custom_Name":"Ben","Content":[{"Id":1,"Question":"1","A":"1","B":"1","C":"Asdfs","D":"1","Right_answer":"A"},{"Id":2,"Question":"1","A":"1","B":"1","C":"1","D":"1","Right_answer":"A"},{"Id":3,"Question":"1","A":"1","B":"1","C":"1","D":"1","Right_answer":"A"},{"Id":4,"Question":"1","A":"1","B":"1","C":"1","D":"1","Right_answer":"A"},{"Id":5,"Question":"1","A":"1","B":"1","C":"1","D":"1","Right_answer":"A"},{"Id":6,"Question":"1","A":"1","B":"1","C":"1","D":"1","Right_answer":"A"}]}]}
+{
+    "Custom": [{
+            "Custom_Id": 1,
+            "Custom_Name": "A",
+            "Content": [{
+                    "Id": 1,
+                    "Question": "The function of long-term scheduler is to:",
+                    "A": "Move the process from ready queue to CPU.",
+                    "B": "Move the process from memory to secondary storage.",
+                    "C": "Move the process from secondary storage to ready queue.",
+                    "D": "Move the process between different queues.",
+                    "Right_answer": "C"
+                },
+                {
+                    "Id": 2,
+                    "Question": "The full form of PCB is:",
+                    "A": "Process Control Block",
+                    "B": "Public Control Block",
+                    "C": "Process Control Box",
+                    "D": "Process Creating Block",
+                    "Right_answer": "A"
+                },
+                {
+                    "Id": 3,
+                    "Question": "The ready queue is maintained by __________.",
+                    "A": "Stack",
+                    "B": "Tree",
+                    "C": "Array",
+                    "D": "Linked list",
+                    "Right_answer": "D"
+                },
+                {
+                    "Id": 4,
+                    "Question": "What is the function of mid-term scheduler?",
+                    "A": "It moves the process from ready queue to CPU.",
+                    "B": "It helps the CPU in executing the process.",
+                    "C": "It swaps out the idle process from memory to secondary storage.",
+                    "D": "It moves the process between different queues.",
+                    "Right_answer": "C"
+                },
+                {
+                    "Id": 5,
+                    "Question": "The processes are executed in the following manner in Round Robin Algorithm.",
+                    "A": "The process having the smallest burst time is executed first.",
+                    "B": "The process is executed for a time quantum and when the time quantum expires, the process enters into waiting state.",
+                    "C": "The processes are executed according to their priority.",
+                    "D": "The process coming first is executed first without preemption.",
+                    "Right_answer": "B"
+                },
+                {
+                    "Id": 6,
+                    "Question": "Which of the following is not the function of Operating System?",
+                    "A": "Process Management",
+                    "B": "Clock Management",
+                    "C": "Memory Management",
+                    "D": "Device Management",
+                    "Right_answer": "B"
+                },
+                {
+                    "Id": 7,
+                    "Question": "Which of the following in not an Operating System?",
+                    "A": "Red Hat",
+                    "B": "Solaris",
+                    "C": "Google Chrome Explorer",
+                    "D": "Mac OS",
+                    "Right_answer": "C"
+                },
+                {
+                    "Id": 8,
+                    "Question": "The state of a process is stored in its __________.",
+                    "A": "PCB",
+                    "B": "Registers",
+                    "C": "Memory",
+                    "D": "Source code",
+                    "Right_answer": "A"
+                },
+                {
+                    "Id": 9,
+                    "Question": "What is the function of short-term scheduler?",
+                    "A": "Selects a process from memory and swaps out to secondary storage.",
+                    "B": "Selects a process from I/O queue to moves it to ready queue.",
+                    "C": "Selects a process from secondary storage device and allocates it to the CPU.",
+                    "D": "Selects a process from ready queue and assigns it to the CPU.",
+                    "Right_answer": "D"
+                },
+                {
+                    "Id": 10,
+                    "Question": "Which of the following is not a product of Microsoft?",
+                    "A": "Ubuntu",
+                    "B": "Vista",
+                    "C": "XP",
+                    "D": "ME",
+                    "Right_answer": "A"
+                }
+            ]
+        },
+        {
+            "Custom_Id": 2,
+            "Custom_Name": "B",
+            "Content": [{
+                    "Id": 1,
+                    "Question": "Which system tools is used to migrate file?",
+                    "A": "Windows easy Transfer",
+                    "B": "Control panel",
+                    "C": "Diagnostic Tool",
+                    "D": "Task Manager",
+                    "Right_answer": "A"
+                },
+                {
+                    "Id": 2,
+                    "Question": "Which of the following is not an operating system?",
+                    "A": "Windows",
+                    "B": "Firefox",
+                    "C": "Linux",
+                    "D": "Unix",
+                    "Right_answer": "B"
+                },
+                {
+                    "Id": 3,
+                    "Question": "What is the difference between a clean installation and an upgrade?",
+                    "A": "There is no difference; they are the same.",
+                    "B": "A clean install includes applications and settings from previous installations.",
+                    "C": "An upgrade includes applications and settings from previous installations.",
+                    "D": "A clean installation starts by formatting the hard drive.",
+                    "Right_answer": "C"
+                },
+                {
+                    "Id": 4,
+                    "Question": "What does an unattended installation require?",
+                    "A": "An XML page",
+                    "B": "A DVD",
+                    "C": "Bootable network card",
+                    "D": "An answer file",
+                    "Right_answer": "D"
+                },
+                {
+                    "Id": 5,
+                    "Question": "Which of these operating system is not Unix based ? ",
+                    "A": "BSD",
+                    "B": "Ubuntu",
+                    "C": "Vista",
+                    "D": "Trustix",
+                    "Right_answer": "C"
+                },
+                {
+                    "Id": 6,
+                    "Question": "Given the following directory permissions:drwxrwxrwt  14 root  36864  2012-03-02  11:17  tmp. What is the letter t at the end of drwxrwxrwt  indicate?",
+                    "A": "It is a temporary bit that prevents launching commands in this directory",
+                    "B": "It means that even though the directory is global writable only the owner can delete their own files",
+                    "C": "It makes the directory accessible for everybody",
+                    "D": "It is the sticky bit that causes all commands in this directory to be launched as a root.",
+                    "Right_answer": "B"
+                },
+                {
+                    "Id": 7,
+                    "Question": "Which of the following is a combined audio/video interface for transmission of digital data?",
+                    "A": "HDMI",
+                    "B": "DVD",
+                    "C": "VGA",
+                    "D": "ATI",
+                    "Right_answer": "A"
+                },
+                {
+                    "Id": 8,
+                    "Question": "Which of the following commands moves the directory ~/summer-vacation and it content to ~/vacation/2011?",
+                    "A": "Mv ~/vacation/2011 ~/summer-vacation",
+                    "B": "Mv -R ~/summer-vacation ~/vacation/2011",
+                    "C": "Mv ~/summer-vacation ~/vacation/2011",
+                    "D": "Mv /home/summer-vacation /home/vacation/2011",
+                    "Right_answer": "C"
+                },
+                {
+                    "Id": 9,
+                    "Question": "Which command lists all files in the current directory that starts with a capital letter?",
+                    "A": "Ls A-Z*",
+                    "B": "Ls --upercasefiles",
+                    "C": "Ls A-Z",
+                    "D": "Ls [A-Z]*",
+                    "Right_answer": "D"
+                },
+                {
+                    "Id": 10,
+                    "Question": "Which is a suitable command to find the next appearance of the word hidden in a man page being viewed from the command line?",
+                    "A": "CTRL-F hidden",
+                    "B": "Find hidden",
+                    "C": "/hidden",
+                    "D": "/? hidden",
+                    "Right_answer": "C"
+                }
+            ]
+        },
+        {
+            "Custom_Id": 3,
+            "Custom_Name": "C",
+            "Content": [{
+                    "Id": 1,
+                    "Question": "Which of the following is correct command for changing the current directory  to the user's home?",
+                    "A": "Cd /",
+                    "B": "Cd ..",
+                    "C": "Cd ~",
+                    "D": "Cd /home",
+                    "Right_answer": "C"
+                },
+                {
+                    "Id": 2,
+                    "Question": "Which of the following software packages is an email server?",
+                    "A": "Postfix",
+                    "B": "MySQL",
+                    "C": "Apache",
+                    "D": "GIMP",
+                    "Right_answer": "A"
+                },
+                {
+                    "Id": 3,
+                    "Question": "Which of the following commands is used to lookup the current IP address of a system?",
+                    "A": "Sysinfo | grep ipaddress",
+                    "B": "Less/proc/net/ipconfig",
+                    "C": "Ipconfig",
+                    "D": "Ifconfig",
+                    "Right_answer": "D"
+                },
+                {
+                    "Id": 4,
+                    "Question": "Which command will display the last line of the file foo.txt?",
+                    "A": "Head -n foo.txt",
+                    "B": "Last -n 1 foo.txt",
+                    "C": "Tail -n 1 foo.txt",
+                    "D": "Tail foo.txt",
+                    "Right_answer": "C"
+                },
+                {
+                    "Id": 5,
+                    "Question": "Which statement about users and user groups is correct?",
+                    "A": "Users do not have to belong to a user group",
+                    "B": "A group can only have one main user",
+                    "C": "There can be only one user group on a system",
+                    "D": "Every user belongs at least to one user group",
+                    "Right_answer": "D"
+                },
+                {
+                    "Id": 6,
+                    "Question": "When a new user is added, where does the user ID get stored?",
+                    "A": "/etc/pass",
+                    "B": "/etc/passwd",
+                    "C": "/etc/users",
+                    "D": "/etc/pass",
+                    "Right_answer": "B"
+                },
+                {
+                    "Id": 7,
+                    "Question": "How can the normal output of a command be written to a file while discarding the error output?",
+                    "A": "Command>2>discard-error>file",
+                    "B": "Command> /dev/null 2&>1 output",
+                    "C": "Command> file2>/dev/null",
+                    "D": "Command /dev/null",
+                    "Right_answer": "C"
+                },
+                {
+                    "Id": 8,
+                    "Question": "Which of the following will change the group that is associated with a file?",
+                    "A": "Chown",
+                    "B": "Ls -g",
+                    "C": "Chmod",
+                    "D": "Chmod -w",
+                    "Right_answer": "A"
+                },
+                {
+                    "Id": 9,
+                    "Question": "Which of the following commands will display a list of all files in the current directory, including  those that may be hidden?",
+                    "A": "Ls --a",
+                    "B": "Ls -h",
+                    "C": "Ls --hidden",
+                    "D": "Ls -a",
+                    "Right_answer": "D"
+                },
+                {
+                    "Id": 10,
+                    "Question": "Which option will cause the echo command NOT to output a trailing newline?",
+                    "A": "-n",
+                    "B": "-s",
+                    "C": "-e",
+                    "D": "-p",
+                    "Right_answer": "A"
+                }
+            ]
+        }
+    ]
+}

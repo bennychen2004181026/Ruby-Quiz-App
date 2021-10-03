@@ -8,6 +8,7 @@ require 'json'
 # a reset object to recover default collection file in case it's corrupted.
 class Test
   include FileManager
+  include DefaultReset
   attr_reader :time_level, :default, :reset
 
   def initialize

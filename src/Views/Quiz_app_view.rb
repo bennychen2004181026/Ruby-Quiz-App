@@ -55,6 +55,7 @@ class QuizView
     def interface
         clear
         menu_banner
+        puts
       options = [
       { name: "New Game", value: -> { get_user_selection } },
       { name: "Custom quiz collections", value: -> { custom_collection } },
@@ -74,6 +75,7 @@ class QuizView
     def history_select
     clear
     history_banner
+    puts
     options = []
     begin history_array =(@history.history)["Records"]
     if  @history.history.size>0 && history_array.size>0
@@ -121,6 +123,7 @@ class QuizView
     def custom_collection
         clear
         custom_banner
+        puts
         options = [
             { name: "Add custom quiz collection", value: -> {
             add_collection
@@ -148,6 +151,7 @@ class QuizView
     def select_collection
         clear
         custom_banner
+        puts
         options = []
         begin collection_array=@custom.custom_load["Custom"]
         if  @custom.custom_load.size>0 and collection_array.size>0
@@ -198,6 +202,7 @@ class QuizView
     def add_collection
         clear
         custom_banner
+        puts
         puts "---------- Add a custom collection----------\n\n"
         # Get the collection name inout from user for future use
         collection_name = @prompt.ask("Please provide the name of the collection:\n\n") do |input|
@@ -265,6 +270,7 @@ class QuizView
     def edit_collection
         clear
         custom_banner
+        puts
         options = []
         # In case the file is corrupted or empty, useing rescue to handle exception and prompt user to go back to create a new custom object and save.
         begin collection_array=@custom.custom_load["Custom"]
@@ -287,6 +293,7 @@ class QuizView
     def edit_quiz(id)
         clear
         custom_banner
+        puts
         # In case the file is corrupted or empty, useing rescue to handle exception and prompt user to go back to create a new custom object and save.
         begin quiz_array = @custom.custom_load["Custom"][id-1]["Content"]
         options=[]
@@ -367,6 +374,7 @@ class QuizView
     def display_delete_collections
         clear
         custom_banner
+        puts
         options = []
         # Try to read the collection object and if error arise prompt user to add collecction feature
         begin custom=@custom.custom_load
@@ -386,6 +394,7 @@ class QuizView
     def delete_decision(custom,collection)
         clear
         custom_banner
+        puts
         options = []
         options.push(
             # Comfirm the decision again!
@@ -402,6 +411,7 @@ class QuizView
     def conduct_deletion(custom,collection)
         clear
         custom_banner
+        puts
         # Perform reject method on the custom array and save the new array
            new_array = custom["Custom"].reject{|e|e==collection}
             custom["Custom"]=new_array
@@ -413,7 +423,6 @@ class QuizView
             elsif
                 for i in 1..new_array.size
                     custom["Custom"][i-1]["Custom_Id"]=i
-                   puts custom["Custom"][i-1]["Custom_Id"]
                 end
                 save_custom_file(custom)
                 puts "Successfully detele the collection!"
@@ -439,6 +448,7 @@ class QuizView
     def get_user_selection
         clear
         test_banner
+        puts
         puts "---------- User selection----------\n\n"
         # First get the name to represent the user
         user_name = @prompt.ask("Hello, visitor! Can I have you name please?\n\n") do |input|
