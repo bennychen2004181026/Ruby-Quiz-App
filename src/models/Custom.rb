@@ -55,5 +55,6 @@ class Custom
   # This method is for invoking the save method from filemanager module.
   def save_custom(custom)
     FileManager.save_custom(custom)
+    puts "Successfully save the custom file."
   end
 end

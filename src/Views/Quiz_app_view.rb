@@ -209,6 +209,7 @@ class QuizView
             input.required true
             input.validate /\A\w+\Z/
             input.modify   :capitalize
+            input.messages[:valid?] = "My dear friend, only letters, numbers and underscore are allowed. Please try again."
           end
         # In case the file reading is failed, rescue block invoke the restore method to create a empty container.
         begin custom_container, id = @custom.add_empty_collection(collection_name)
@@ -220,8 +221,8 @@ class QuizView
         # Get the limited range number of questions in a collection from user to identify the size of collection.
         quiz_number=@prompt.ask("Please provide the number of quizs in the collection in range: 6-15\n\n",required: true) do |input|
         input.convert(:int, "I need a integer, my friend.")
-        input.in("2-15")
-        input.messages[:range?] = "An Integer between 2 to 15 both inclusively please"
+        input.in("6-15")
+        input.messages[:range?] = "An Integer between 6 to 15 both inclusively please"
         end
       # According the number, perform obtaining required informations loop to fill all the question content 
         for i in 1..quiz_number do
@@ -455,6 +456,7 @@ class QuizView
             input.required true
             input.validate /\A\w+\Z/
             input.modify   :capitalize
+            input.messages[:valid?] = "My dear friend, only letters, numbers and underscore are allowed. Please try again."
         end
         clear
         test_banner
@@ -474,7 +476,7 @@ class QuizView
                 interface
               } },
         ]
-       selection = @prompt.select("Please select one time mode for answering each question in a quiz.\nIf you can not selection a option in the limited time\nIt will be considered as false amswer", level_selections, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)\n\n", show_help: :always,per_page:5)
+       selection = @prompt.select("Please select one time mode for answering each question in a quiz.\nIf you can not selection a option in the limited time\nIt will be considered as false amswer".colorize(:light_magenta), level_selections, help: "(Select with pressing ↑/↓ arrow keys, and then pressing Enter)\n\n", show_help: :always,per_page:5)
        
        clear
        test_banner

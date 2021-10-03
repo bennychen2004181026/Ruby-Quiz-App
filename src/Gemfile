@@ -12,7 +12,6 @@ gem "tty-prompt", "~> 0.23.1"
 
 gem "json", "~> 2.5"
 
-gem "tty-font", "~> 0.5.0"
 
 
 gem "optparse", "~> 0.1.1"
