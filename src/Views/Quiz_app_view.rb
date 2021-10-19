@@ -619,6 +619,9 @@ class QuizView
     total_score = 0
     correct_count = 0
     incorrect_count = 0
+    result = nil
+    right_answer = nil
+    start_time = 0
     status.push(total_score).push(correct_count).push(incorrect_count)
     # Loop the length of the quiz collection times to finish the test
     (1..quiz['Content'].size).each do |i|
@@ -632,30 +635,31 @@ class QuizView
         puts 'You have get ' + (status[1]).to_s.colorize(:light_yellow) + ' correct answer(s) so far.    And the total score is' + " #{status[0]}.\n\n".colorize(:light_blue)
         puts "Question #{i}.".colorize(:blue) + " #{quiz['Content'][i - 1]['Question']}\n\n"
         right_answer = quiz['Content'][i - 1]['Right_answer']
+
         # According to the selection, invoke the vailidat_answer method and pass necessary attributes
-        current = Thread.current
         options = [
           { name: "A. #{quiz['Content'][i - 1]['A']}", value: lambda {
-                                                                Thread.new {validate_answer('A', right_answer, status, start_time, time)}.join
-                                                                current.kill
+                                                                result = 'A'
+                                                                return result, right_answer, status, start_time, time
                                                               } },
           { name: "B. #{quiz['Content'][i - 1]['B']}", value: lambda {
-                                                                Thread.new {validate_answer('B', right_answer, status, start_time, time)}.join
-                                                                current.kill
+                                                                result = 'B'
+                                                                return result, right_answer, status, start_time, time
                                                               } },
           { name: "C. #{quiz['Content'][i - 1]['C']}", value: lambda {
-            Thread.new { validate_answer('C', right_answer, status, start_time, time)}.join
-            current.kill
+                                                                result = 'C'
+                                                                return result, right_answer, status, start_time, time
                                                               } },
           { name: "D. #{quiz['Content'][i - 1]['D']}", value: lambda {
-            Thread.new { validate_answer('D', right_answer, status, start_time, time)}.join
-            current.kill
+                                                                result = 'D'
+                                                                return result, right_answer, status, start_time, time
                                                               } }
         ]
-        option = option = @prompt.select(
+        option = @prompt.select(
           "Please select the answer as fast as you can to gain more score.\nIf you select wrong answer or time expired, you will not get the score for Question #{i}", options, help: "(Pressing Enter to go back)\n\n\n", show_help: :always, per_page: 4
         )
       end
+      validate_answer(result, right_answer, status, start_time, time)
       # If time expired, then apply the following logic to assian attribute to validate method
     rescue Timeout::Error
       clear
@@ -664,8 +668,10 @@ class QuizView
       puts "\n\nOh, no!!! The #{time}s haven been passed."
       start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
       right_answer = quiz['Content'][i - 1]['Right_answer']
-      validate_answer('expired', right_answer, status, start_time, time)
+      result = 'expired'
+      validate_answer(result, right_answer, status, start_time, time)
     end
+
     clear
     test_banner
     puts
@@ -699,8 +705,8 @@ class QuizView
   end
 
   # This helper is for validate the answer, udate the status attributes and display encouraging words for user
-  def validate_answer(answer, right_answer, status, start_time, time)
-    case answer
+  def validate_answer(result, right_answer, status, start_time, time)
+    case result
     when right_answer
       # Get the stop time stamp to calculate the score, the faster to get the answer, the more bounds score is earned.
       answer_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
@@ -710,10 +716,10 @@ class QuizView
       # Update the score and pass back to the loop
       status[0] += total_score
       status[1] += 1
-      puts 'Hooray!!! You got it!!'
+      puts "\n\n Hooray!!! You got it!!"
 
     else
-      puts "It's fine. Let's keep going"
+      puts "\n\nSorry, not correct answer or time expired!\nIt's fine. Let's keep going"
       status[2] += 1
     end
     enter_to_continue
