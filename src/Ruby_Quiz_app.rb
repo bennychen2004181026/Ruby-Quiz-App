@@ -49,12 +49,12 @@ if ARGV.empty?
       exit
     end
   
-      opts.on('-a', '--addcustom', 'Add a custom quiz collection.') do
+      opts.on('-a', '--addCustom', 'Add a custom quiz collection.') do
         caller = quiz_controller.add_custom
       exit
     end
   
-      opts.on('-d', '--displaycustom', "Display existing custom collections") do
+      opts.on('-d', '--displayCustom', "Display existing custom collections") do
         caller = quiz_controller.display_custom
       exit
     end

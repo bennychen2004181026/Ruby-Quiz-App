@@ -1,5 +1,5 @@
 # Ruby Quiz Terminal App T1A3
-###By GuangJian Chen
+###By Ben Chen
 
 ##### R4 [My App Repository Link](https://github.com/bennychen2004181026/Ruby-Quiz-App)
 
@@ -26,12 +26,12 @@
 
 **1. Run a quiz test**
 
-The first important feature is running a quiz test game. It first collect necessary information like user name, which quiz collection of either custom quiz bank or default quiz bank and the difficulty mode which easy for longer answering time and hard for shorter answering time. All the typing input requires some validation, such as empty space as whole name is not allow. And then the logic will require the collection object being read from the corresponding save file. Here requires some exception handling rescue method in case the save file is corrupted or relevant content is empty otherwise it encounter a nil class and exception arise. Then the logic can perform a game loop base on the collection content. Each question is been displayed and prompt for selection in the loop til the end of the question content array. Each question is originally with its index in an array, so the index can be used as iterator in a loop. At the mean while the test game requires a time out feature to perform the time ticking pressure. But as we know Ruby is not a single thread language virtually. I have no clue how to perform display time counting down feature and displaying question and prompt for selection at exactly the same time. Then I find a workaround for this time limit feature. That is using timeout module which is introduced in Ruby 2.5.1. This module potentially aim to auto-terminate a long running task that if they don’t end up in a time you provided. Although I couldn’t display the counting down time but the current question answer process will be end and turn to the rescue block and I can validate the result there and iterate to next step. No matter the user select the option on time or not, all the corresponding attribute will be accumulated and be pasted to the result validation method and a new history record will be produced and being save in history file for viewing. Base on the view controller moddel principle, the view class will handle all the logic on displaying and get all the necessary from the history and custom model through the controller with the attribute reading syntax in the model.
+The first important feature is running a quiz test game. It first collect necessary information like user name, which quiz collection of either custom quiz bank or default quiz bank and the difficulty mode which easy for longer answering time and hard for shorter answering time. All the typing input requires some validation, such as empty space as whole name is not allow. And then the logic will require the collection object being read from the corresponding save file. Here requires some exception handling rescue method in case the save file is corrupted or relevant content is empty otherwise it encounter a nil class and exception arise. Then the logic can perform a game loop base on the collection content. Each question is been displayed and prompt for selection in the loop til the end of the question content array. Each question is originally with its index in an array, so the index can be used as iterator in a loop. At the mean while the test game requires a time out feature to perform the time ticking pressure. But as we know Ruby is not a single thread language virtually. I have no clue how to perform display time counting down feature and displaying question and prompt for selection at exactly the same time. Then I find a workaround for this time limit feature. That is using timeout module which is introduced in Ruby 2.5.1. This module potentially aim to auto-terminate a long running task that if they don’t end up in a time you provided. Although I couldn’t display the counting down time but the current question answer process will be end and turn to the rescue block and I can validate the result there and iterate to next step. No matter the user select the option on time or not, all the corresponding attribute will be accumulated and be pasted to the result validation method and a new history record will be produced and being save in history file for viewing. Base on the view controller model principle, the view class will handle all the logic on displaying and get all the necessary from the history and custom model through the controller with the attribute reading syntax in the model.
 
 &nbsp;
 **2. Custom feature**
 
-Custom feature allow user to add, edit ,delete a quiz collection. Consider if I only set one kind of quiz bank and user may mistakenly delete all the quiz collection, that will be very cringe with my test running feature because there is no content I can test. So I design a default quiz collection and a custom one. User can manipulate with the custom content as they want, but I don’t provide any access to change the default content. The data structure of the quiz is using a key value pair in a hash. Base on the type of collection, the key will be custom or default, and the value will be an array. In the array, each element represent a collection of quiz, it has id, name and content key value pairs. And the the value of content key is an array as well. It encapsulates each question as an element. And each question has id, question content, option a, b, c, d and correct option key value pairs. And I will write a module about manager the file reading and saving which being included in the custom, history and test model. The models have their own initializes and manipulate content method. The view class can receive the instances of all model class and invoke the methods inside to change , save, load and display the content. By this manner, the logic can use many hash class and array class built in method , such as hash[key], array.push() to complete the manipulation. In the file manager module, I will use json gem to parse and translate the content from or into save file. In case of custom file is corrputed or the collections array is empty because user delete all the custom banks and exception will arise, several back up methods on recreating a collection container is provided in the model.
+Custom feature allow user to add, edit ,delete a quiz collection. Consider if I only set one kind of quiz bank and user may mistakenly delete all the quiz collection, that will be very cringe with my test running feature because there is no content I can test. So I design a default quiz collection and a custom one. User can manipulate with the custom content as they want, but I don’t provide any access to change the default content. The data structure of the quiz is using a key value pair in a hash. Base on the type of collection, the key will be custom or default, and the value will be an array. In the array, each element represent a collection of quiz, it has id, name and content key value pairs. And the the value of content key is an array as well. It encapsulates each question as an element. And each question has id, question content, option a, b, c, d and correct option key value pairs. And I will write a module about manager the file reading and saving which being included in the custom, history and test model. The models have their own initializes and manipulate content method. The view class can receive the instances of all model class and invoke the methods inside to change , save, load and display the content. By this manner, the logic can use many hash class and array class built in method , such as hash[key], array.push() to complete the manipulation. In the file manager module, I will use json gem to parse and translate the content from or into save file. In case of custom file is corrupted or the collections array is empty because user delete all the custom banks and exception will arise, several back up methods on recreating a collection container is provided in the model.
 
 &nbsp;
 **3. Display history record feature**
@@ -44,17 +44,17 @@ Display history record is easy compared to test running and custom feature. I ju
 
 First of all, my app using tty-prompt gem to select most of the selection. It reduces lots of workload on validating the inputs in my app. But some inputs such as name and number range input are still needed to be validated by own regex expression or number in array range method to validate them.
 
-When user new game option from main menu, screen will prompt for user name with a display message and vaildate their input if their input is not valid, an error message will show up and remind them the input must only have letters, numbers and underscore inside. After that, user will be prompt to select difficulty. After the time selecting, the screen will turn to the default or custom collections selecting, and if user is not satisfy the previous setting, app provide a back option as well. After selecting the certain collection, a confirmation message shows up and prompt user to hit enter to start the game. In the test game if user select right answer their score will grow and according the speed of the selecting they can gain more score. If user get wrong answer or time expired, corresponding message shows up and the score won’t grow. And then it turn to next question. After all questions being answered, it display the results and record is being save behind the screen.
+When user new game option from main menu, screen will prompt for user name with a display message and validate their input if their input is not valid, an error message will show up and remind them the input must only have letters, numbers and underscore inside. After that, user will be prompt to select difficulty. After the time selecting, the screen will turn to the default or custom collections selecting, and if user is not satisfy the previous setting, app provide a back option as well. After selecting the certain collection, a confirmation message shows up and prompt user to hit enter to start the game. In the test game if user select right answer their score will grow and according the speed of the selecting they can gain more score. If user get wrong answer or time expired, corresponding message shows up and the score won’t grow. And then it turn to next question. After all questions being answered, it display the results and record is being save behind the screen.
 
 1. Custom feature
    
-In the custom feature, user can easily selcting the prompt options by applying the tty-prompt gem. But in the add custom collection part, I still need to validate a name input just I did on test feature part. And a number input of how many question in a collection and if user provide any thing but a number within 6 to 15 and error message will show up and inform user to type a integer within 6 to 15. And then the app will loop the previous number input times to prompt user to fill all the necessary content. At last, a message appears to inform user the new custom collection is added and being saved.
+In the custom feature, user can easily select the prompt options by applying the tty-prompt gem. But in the add custom collection part, I still need to validate a name input just I did on test feature part. And a number input of how many question in a collection and if user provide any thing but a number within 6 to 15 and error message will show up and inform user to type a integer within 6 to 15. And then the app will loop the previous number input times to prompt user to fill all the necessary content. At last, a message appears to inform user the new custom collection is added and being saved.
 
 All the select option has basic validating to exclude the Individual empty content. After adding feature in custom, user can use tty-promt to easily view the existing custom collections and delete or editing any existing custom content. The validation of edit custom content is the same with add feature.
 
 1. History feature
 
-User select the history prompt option to view all the history record and a go back option is provided as well as in other feature to let uesr easily go back to upper menu.
+User select the history prompt option to view all the history record and a go back option is provided as well as in other feature to let user easily go back to upper menu.
 
 #### R8 Flow chart
 
@@ -68,7 +68,7 @@ The screen shots of the plan locate in docs folder in this repo.
 
 #### R10 Help documentation 
 
-My ruby quiz app is for the people who want to effectively memorize the computer science knowledge by play the quiz game in the app. My app also provide custom feature to allow user to make their own custom quiz collection. Throughout the custom makeing process, user can get advantage that when collecting their own quiz, they can practice with brain and eventually help their initial purpose. When play the quiz game, the time limited feature can provide more pressure to push user on studying.
+My ruby quiz app is for the people who want to effectively memorize the computer science knowledge by play the quiz game in the app. My app also provide custom feature to allow user to make their own custom quiz collection. Throughout the custom making process, user can get advantage that when collecting their own quiz, they can practice with brain and eventually help their initial purpose. When play the quiz game, the time limited feature can provide more pressure to push user on studying.
 
 ## Installation
 
@@ -95,9 +95,9 @@ https://www.ruby-lang.org/en/documentation/installation/
 - rspec (to test models)
 - optparse (to provide arguments setting)
 
-Runing
+Running
 
-### Runing
+### Running
 
 1.  In the src directory, run the bash script by using the command below:
     ```
@@ -114,8 +114,8 @@ My quiz app supports several command line arguments so that it can be used to na
 -v, --version        - display version of my app
 -h, --help           - display help information
 -t, --test           - perform quiz test game 
--a, --addcustom      - navigate to custom menu
--d, --displaycustom  - navigate to display custom menu
+-a, --addCustom      - navigate to custom menu
+-d, --displayCustom  - navigate to display custom menu
 -r, --records        - navigate to history record menu
 -m, --main           - navigate to main menu
 ```
