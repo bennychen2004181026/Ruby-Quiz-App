@@ -58,7 +58,7 @@ User select the history prompt option to view all the history record and a go ba
 
 #### R8 Flow chart
 
-![Control flow diagram](../GuangJianChen_T1A3/docs/Untitled%20Diagram.drawio.png)
+![Control flow diagram](./docs/Diagram.png)
 
 #### R9 Implementation plan
 
